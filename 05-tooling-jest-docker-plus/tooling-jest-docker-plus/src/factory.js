@@ -5,14 +5,15 @@ const s3config = {
 };
 
 if (process.env.IS_OFFLINE) {
-  aws.config.update({
-    credentials: {
-      accessKeyId: "test",
-      secretAccessKey: "test",
-    },
-  });
+  // Not necessary when env vars are set
+  // aws.config.update({
+  //   credentials: {
+  //     accessKeyId: "test",
+  //     secretAccessKey: "test",
+  //   },
+  // });
 
-  const host = process.env.LOCALSTACK_HOST;
+  const host = process.env.LOCALSTACK_HOST || "localhost";
   s3config.endpoint = new aws.Endpoint(`http://${host}:4566`);
 }
 
