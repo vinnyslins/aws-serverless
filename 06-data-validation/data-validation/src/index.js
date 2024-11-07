@@ -1,36 +1,14 @@
-const { randomUUID } = require("node:crypto");
-
+const Handler = require("./handler");
 const { dynamodb } = require("./factory");
+const { decoratorValidator } = require("./utils");
 
-const heroesInsert = async (event) => {
-  const body = JSON.parse(event.body);
+const handler = new Handler({ dynamodbSvc: dynamodb });
 
-  const params = {
-    TableName: "Heroes",
-    Item: {
-      ...body,
-      id: randomUUID(),
-      createdAt: new Date().toISOString(),
-    },
-  };
-
-  await dynamodb.put(params).promise();
-
-  const insertedItem = await dynamodb
-    .query({
-      TableName: "Heroes",
-      KeyConditionExpression: "id = :id",
-      ExpressionAttributeValues: {
-        ":id": params.Item.id,
-      },
-    })
-    .promise();
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(insertedItem),
-  };
-};
+const heroesInsert = decoratorValidator(
+  handler.main.bind(handler),
+  Handler.validator(),
+  "body"
+);
 
 const heroesTrigger = async (event) => {
   console.log("Event", event);
