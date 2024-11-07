@@ -1,0 +1,16 @@
+service: data-validation
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+
+functions:
+  heroesInsert:
+    handler: src/index.heroesInsert
+    events:
+      - http:
+          path: /heroes
+          method: post
+          cors: true
