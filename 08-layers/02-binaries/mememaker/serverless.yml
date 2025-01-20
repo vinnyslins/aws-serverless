@@ -1,0 +1,26 @@
+service: mememaker
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+
+plugins:
+  - serverless-offline
+
+functions:
+  mememaker:
+    handler: index.handler
+    layers:
+      - arn:aws:lambda:us-east-1:175033217214:layer:graphicsmagick:2
+    events:
+      - http:
+          method: get
+          path: /mememaker
+          request:
+            parameters:
+              querystrings:
+                image: true
+                topText: true
+                bottomText: true
